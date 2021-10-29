@@ -18,6 +18,9 @@ locals {
     [for user in values.acl_readers : { topic : name, user : user }]
   ])
   readers_map = { for v in local.topic_readers : "${v.topic}/${v.user}" => v }
+  readers_set = toset([
+    for r in local.topic_readers: r.user
+  ])
   topic_writers = flatten([
     for name, values in var.topics :
     [for user in values.acl_writers : { topic : name, user : user }]
@@ -96,6 +99,17 @@ resource "kafka_acl" "readers" {
   resource_name       = each.value.topic
   resource_type       = "Topic"
   acl_principal       = "User:${confluentcloud_service_account.service_accounts[each.value.user].id}"
+  acl_host            = "*"
+  acl_operation       = "Read"
+  acl_permission_type = "Allow"
+}
+
+resource "kafka_acl" "group_readers" {
+  for_each = local.readers_set
+
+  resource_name       = "*"
+  resource_type       = "Group"
+  acl_principal       = "User:${confluentcloud_service_account.service_accounts[each.value].id}"
   acl_host            = "*"
   acl_operation       = "Read"
   acl_permission_type = "Allow"

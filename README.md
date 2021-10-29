@@ -45,6 +45,8 @@ module "confluent-kafka-cluster" {
 
 The module outputs a map of service account credentials, keyed by the names provided to the `acl_` variables. Use this output as input to a separate module or resource that saves it for application use.
 
+> `reader` service accounts are granted read access to all groups. See `group_readers` resource.
+
 ## Requirements
 
 Terraform >= 1.0.0
