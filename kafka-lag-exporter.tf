@@ -8,21 +8,21 @@ locals {
 }
 
 resource "kubernetes_service_account" "lag_exporter_service_account" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.lag_exporter_common_labels
   }
 }
 
 resource "kubernetes_secret" "lag_exporter_config" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.lag_exporter_common_labels
   }
 
@@ -31,7 +31,7 @@ resource "kubernetes_secret" "lag_exporter_config" {
       "${path.module}/templates/application.conf", {
         username         = confluentcloud_api_key.kafka_lag_exporter_api_key[0].key
         password         = confluentcloud_api_key.kafka_lag_exporter_api_key[0].secret
-        namespace        = var.exporter_namespace
+        namespace        = var.metric_exporters_namespace
         bootstrapBrokers = local.bootstrap_servers[0]
     })
     "logback.xml" = file("${path.module}/templates/logback.xml")
@@ -39,14 +39,14 @@ resource "kubernetes_secret" "lag_exporter_config" {
 }
 
 resource "kubernetes_deployment" "lag_exporter_deployment" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   #   # if set to true, k8s apply take a long time
   wait_for_rollout = false
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.lag_exporter_common_labels
   }
 

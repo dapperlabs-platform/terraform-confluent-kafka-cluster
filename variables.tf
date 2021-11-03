@@ -78,7 +78,7 @@ variable "confluent_cloud_password" {
   sensitive   = true
 }
 
-variable "exporter_namespace" {
+variable "metric_exporters_namespace" {
   description = "Namespace to deploy exporters to"
   type        = string
   default     = "sre"
@@ -96,7 +96,7 @@ variable "ccloud_exporter_image_version" {
   default     = "latest"
 }
 
-variable "enable_exporters" {
+variable "enable_metric_exporters" {
   description = "Whether to deploy kafka-lag-exporter and ccloud-exporter in a kubernetes cluster"
   type        = bool
   default     = false

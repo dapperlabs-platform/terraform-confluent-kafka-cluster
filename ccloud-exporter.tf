@@ -8,21 +8,21 @@ locals {
 }
 
 resource "kubernetes_service_account" "ccloud_exporter_service_account" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   metadata {
     name      = local.ccloud_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.ccloud_exporter_common_labels
   }
 }
 
 resource "kubernetes_secret" "ccloud_exporter_config" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   metadata {
     name      = local.ccloud_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.ccloud_exporter_common_labels
   }
 
@@ -34,14 +34,14 @@ resource "kubernetes_secret" "ccloud_exporter_config" {
 }
 
 resource "kubernetes_deployment" "ccloud_exporter_deployment" {
-  count = var.enable_exporters ? 1 : 0
+  count = var.enable_metric_exporters ? 1 : 0
 
   #   # if set to true, k8s apply take a long time
   wait_for_rollout = false
 
   metadata {
     name      = local.ccloud_exporter_name
-    namespace = var.exporter_namespace
+    namespace = var.metric_exporters_namespace
     labels    = local.ccloud_exporter_common_labels
   }
 
@@ -70,7 +70,7 @@ resource "kubernetes_deployment" "ccloud_exporter_deployment" {
           name  = local.ccloud_exporter_name
           image = "dabz/ccloudexporter:${var.ccloud_exporter_image_version}"
           # https://github.com/Dabz/ccloudexporter/releases
-          # Repo has poor release management
+          # Repo recommends pointing to master
           image_pull_policy = "Always"
 
           resources {
@@ -98,7 +98,7 @@ resource "kubernetes_deployment" "ccloud_exporter_deployment" {
 
           readiness_probe {
             http_get {
-              path = "/"
+              path = "/metrics"
               port = "http"
             }
 
@@ -111,7 +111,7 @@ resource "kubernetes_deployment" "ccloud_exporter_deployment" {
 
           liveness_probe {
             http_get {
-              path = "/"
+              path = "/metrics"
               port = "http"
             }
 
