@@ -77,3 +77,21 @@ variable "confluent_cloud_password" {
   type        = string
   sensitive   = true
 }
+
+variable "lag_exporter_namespace" {
+  description = "Namespace to deploy lag exporter to"
+  type        = string
+  default     = "sre"
+}
+
+variable "lag_exporter_image_version" {
+  description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
+  type        = string
+  default     = "latest"
+}
+
+variable "enable_lag_exporter" {
+  description = "Whether to deploy kafka-lag-exporter in a kubernetes cluster"
+  type        = bool
+  default     = false
+}
