@@ -1,5 +1,5 @@
 locals {
-  common_labels = {
+  lag_exporter_common_labels = {
     name       = "kafka-lag-exporter"
     instance   = "kafka-lag-exporter"
     managed-by = "Terraform"
@@ -8,22 +8,22 @@ locals {
 }
 
 resource "kubernetes_service_account" "lag_exporter_service_account" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.lag_exporter_namespace
-    labels    = local.common_labels
+    namespace = var.exporter_namespace
+    labels    = local.lag_exporter_common_labels
   }
 }
 
 resource "kubernetes_secret" "lag_exporter_config" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.lag_exporter_namespace
-    labels    = local.common_labels
+    namespace = var.exporter_namespace
+    labels    = local.lag_exporter_common_labels
   }
 
   data = {
@@ -31,7 +31,7 @@ resource "kubernetes_secret" "lag_exporter_config" {
       "${path.module}/templates/application.conf", {
         username         = confluentcloud_api_key.kafka_lag_exporter_api_key[0].key
         password         = confluentcloud_api_key.kafka_lag_exporter_api_key[0].secret
-        namespace        = var.lag_exporter_namespace
+        namespace        = var.exporter_namespace
         bootstrapBrokers = local.bootstrap_servers[0]
     })
     "logback.xml" = file("${path.module}/templates/logback.xml")
@@ -39,27 +39,27 @@ resource "kubernetes_secret" "lag_exporter_config" {
 }
 
 resource "kubernetes_deployment" "lag_exporter_deployment" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
   #   # if set to true, k8s apply take a long time
   wait_for_rollout = false
 
   metadata {
     name      = local.lag_exporter_name
-    namespace = var.lag_exporter_namespace
-    labels    = local.common_labels
+    namespace = var.exporter_namespace
+    labels    = local.lag_exporter_common_labels
   }
 
   spec {
     replicas = 1
 
     selector {
-      match_labels = local.common_labels
+      match_labels = local.lag_exporter_common_labels
     }
 
     template {
       metadata {
-        labels = local.common_labels
+        labels = local.lag_exporter_common_labels
         annotations = {
           "prometheus.io/port"   = "9090"
           "prometheus.io/path"   = "/"
@@ -72,8 +72,8 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
         termination_grace_period_seconds = 300
 
         container {
-          image             = "lightbend/kafka-lag-exporter:${var.lag_exporter_image_version}"
           name              = local.lag_exporter_name
+          image             = "lightbend/kafka-lag-exporter:${var.lag_exporter_image_version}"
           image_pull_policy = "IfNotPresent"
 
           resources {

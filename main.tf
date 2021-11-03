@@ -72,23 +72,31 @@ resource "confluentcloud_api_key" "service_account_api_keys" {
   user_id        = confluentcloud_service_account.service_accounts[each.value].id
 }
 
+resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
+  count = var.enable_exporters ? 1 : 0
+
+  environment_id = confluentcloud_environment.environment.id
+  description    = "${local.name} ccloud exporter api key"
+}
+
 resource "confluentcloud_service_account" "kafka_lag_exporter" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
   name        = "kafka-lag-exporter"
   description = "Kafka lag exporter service account"
 }
 
 resource "confluentcloud_api_key" "kafka_lag_exporter_api_key" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
-  cluster_id     = confluentcloud_kafka_cluster.cluster.id
+  description    = "${local.name} kafka lag exporter api key"
   environment_id = confluentcloud_environment.environment.id
+  cluster_id     = confluentcloud_kafka_cluster.cluster.id
   user_id        = confluentcloud_service_account.kafka_lag_exporter[0].id
 }
 
 resource "kafka_acl" "kafka_lag_exporter" {
-  count = var.enable_lag_exporter ? 1 : 0
+  count = var.enable_exporters ? 1 : 0
 
   resource_name       = "*"
   resource_type       = "Topic"
