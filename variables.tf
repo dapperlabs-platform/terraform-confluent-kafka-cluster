@@ -77,3 +77,38 @@ variable "confluent_cloud_password" {
   type        = string
   sensitive   = true
 }
+
+variable "enable_metric_exporters" {
+  description = "Whether to deploy kafka-lag-exporter and ccloud-exporter in a kubernetes cluster"
+  type        = bool
+  default     = false
+}
+
+variable "metric_exporters_namespace" {
+  description = "Namespace to deploy exporters to"
+  type        = string
+  default     = "sre"
+}
+
+variable "kafka_lag_exporter_image_version" {
+  description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
+  type        = string
+  default     = "latest"
+}
+
+variable "ccloud_exporter_image_version" {
+  description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
+  type        = string
+  default     = "latest"
+}
+
+variable "create_grafana_dashboards" {
+  description = "Whether to create grafana dashboards with default metric exporter panels"
+  type        = bool
+  default     = false
+}
+
+variable "grafana_datasource" {
+  description = "Name of Grafana data source where Kafka metrics are stored"
+  type        = string
+}

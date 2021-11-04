@@ -8,18 +8,23 @@ terraform {
       source  = "Mongey/kafka"
       version = "0.2.11"
     }
+    grafana = {
+      source  = "grafana/grafana"
+      version = ">= 1.14.0"
+    }
   }
 }
 
 locals {
-  name = "${var.environment}-${var.name}"
+  name    = "${var.environment}-${var.name}"
+  lc_name = lower("${var.environment}-${var.name}")
   topic_readers = flatten([
     for name, values in var.topics :
     [for user in values.acl_readers : { topic : name, user : user }]
   ])
   readers_map = { for v in local.topic_readers : "${v.topic}/${v.user}" => v }
   readers_set = toset([
-    for r in local.topic_readers: r.user
+    for r in local.topic_readers : r.user
   ])
   topic_writers = flatten([
     for name, values in var.topics :
@@ -69,6 +74,40 @@ resource "confluentcloud_api_key" "service_account_api_keys" {
   cluster_id     = confluentcloud_kafka_cluster.cluster.id
   environment_id = confluentcloud_environment.environment.id
   user_id        = confluentcloud_service_account.service_accounts[each.value].id
+}
+
+resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  environment_id = confluentcloud_environment.environment.id
+  description    = "${local.name} ccloud exporter api key"
+}
+
+resource "confluentcloud_service_account" "kafka_lag_exporter" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  name        = "kafka-lag-exporter"
+  description = "Kafka lag exporter service account"
+}
+
+resource "confluentcloud_api_key" "kafka_lag_exporter_api_key" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  description    = "${local.name} kafka lag exporter api key"
+  environment_id = confluentcloud_environment.environment.id
+  cluster_id     = confluentcloud_kafka_cluster.cluster.id
+  user_id        = confluentcloud_service_account.kafka_lag_exporter[0].id
+}
+
+resource "kafka_acl" "kafka_lag_exporter" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Topic"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Read"
+  acl_permission_type = "Allow"
 }
 
 resource "confluentcloud_kafka_cluster" "cluster" {
