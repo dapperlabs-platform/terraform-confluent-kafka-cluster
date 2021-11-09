@@ -66,18 +66,6 @@ variable "topics" {
   )
 }
 
-variable "confluent_cloud_username" {
-  description = "Confluent cloud username"
-  type        = string
-  sensitive   = true
-}
-
-variable "confluent_cloud_password" {
-  description = "Confluent cloud password"
-  type        = string
-  sensitive   = true
-}
-
 variable "enable_metric_exporters" {
   description = "Whether to deploy kafka-lag-exporter and ccloud-exporter in a kubernetes cluster"
   type        = bool
@@ -111,4 +99,5 @@ variable "create_grafana_dashboards" {
 variable "grafana_datasource" {
   description = "Name of Grafana data source where Kafka metrics are stored"
   type        = string
+  default     = null
 }

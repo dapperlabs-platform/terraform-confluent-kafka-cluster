@@ -12,3 +12,9 @@ output "kafka_url" {
   description = "URL to connect your Kafka clients to"
   value       = local.bootstrap_servers
 }
+
+output "admin_api_key" {
+  description = "Admin user api key and secret"
+  value       = confluentcloud_api_key.admin_api_key
+  sensitive   = true
+}
