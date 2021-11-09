@@ -25,6 +25,7 @@ module "confluent-kafka-cluster" {
   ccloud_exporter_image_version     = "latest"
   metric_exporters_namespace        = "sre"
   create_grafana_dashboards         = true
+  grafana_datasource                = "Default Datasource"
   topics = {
     "topic-1" = {
       replication_factor = 3
@@ -62,7 +63,10 @@ The module outputs a map of service account credentials, keyed by the names prov
 
 ## Requirements
 
-Terraform >= 1.0.0
+- Terraform >= 1.0.0
+- Mongey/confluentcloud >= 0.0.12
+- Mongey/kafka >= 0.2.11
+- grafana/grafana >= 1.14.0
 
 ## Inputs
 
@@ -79,10 +83,9 @@ Terraform >= 1.0.0
 | service_provider                                                                                                                                                                                                                        | Confluent cloud service provider. AWS, GCP, Azure                                                            | string | GCP     |          |
 | topics                                                                                                                                                                                                                                  | Kafka topic definitions.                                                                                     |
 | Object map keyed by topic name with topic configuration values as well as reader and writer ACL lists. Values provided to the ACL lists will become service accounts with { key, secret } objects output by service_account_credentials | list(object)                                                                                                 |        | x       |
-| confluent_cloud_username                                                                                                                                                                                                                | Confluent cloud username. Provide via TF_VAR_confluent_cloud_username                                        | string |         |    x     |
-| confluent_cloud_password                                                                                                                                                                                                                | Confluent cloud password. Provide via TF_VAR_confluent_cloud_password                                        | string |         |    x     |
 | enable_metric_exporters                                                                                                                                                                                                                 | Whether to deploy metrics exporters                                                                          | bool   |         |  false   |
 | metric_exporters_namespace                                                                                                                                                                                                              | K8S Namespace in which to deploy metrics exporters                                                           | string |         |   sre    |
 | kafka_lag_exporter_image_version                                                                                                                                                                                                        | Kafka lag exporter image version                                                                             | string |         |  latest  |
 | ccloud_exporter_image_version                                                                                                                                                                                                           | CCloud exporter image version                                                                                | string |         |  latest  |
 | create_grafana_dashboards                                                                                                                                                                                                               | Whether to create Grafana dashboards                                                                         | bool   |         |  false   |
+| grafana_datasource                                                                                                                                                                                                                      | Grafana datasource to use in dashboards                                                                      | string |         |   null   |

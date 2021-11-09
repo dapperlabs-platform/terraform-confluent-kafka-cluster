@@ -2,11 +2,11 @@ terraform {
   required_providers {
     confluentcloud = {
       source  = "Mongey/confluentcloud"
-      version = "0.0.12"
+      version = ">= 0.0.12"
     }
     kafka = {
       source  = "Mongey/kafka"
-      version = "0.2.11"
+      version = ">= 0.2.11"
     }
     grafana = {
       source  = "grafana/grafana"
@@ -38,20 +38,6 @@ locals {
     [for v in local.readers_map : v.user],
     [for v in local.writers_map : v.user]
   )
-}
-
-provider "confluentcloud" {
-  username = var.confluent_cloud_username
-  password = var.confluent_cloud_password
-}
-
-provider "kafka" {
-  bootstrap_servers = local.bootstrap_servers
-  tls_enabled       = true
-  sasl_username     = confluentcloud_api_key.admin_api_key.key
-  sasl_password     = confluentcloud_api_key.admin_api_key.secret
-  sasl_mechanism    = "plain"
-  timeout           = 10
 }
 
 resource "confluentcloud_environment" "environment" {
