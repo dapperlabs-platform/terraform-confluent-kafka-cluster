@@ -51,7 +51,7 @@ resource "confluentcloud_api_key" "admin_api_key" {
 
 resource "confluentcloud_service_account" "service_accounts" {
   for_each    = toset(local.service_accounts)
-  name        = each.value
+  name        = "${local.lc_name}-${each.value}"
   description = "${each.value} service account"
 }
 
@@ -72,7 +72,7 @@ resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
 resource "confluentcloud_service_account" "kafka_lag_exporter" {
   count = var.enable_metric_exporters ? 1 : 0
 
-  name        = "kafka-lag-exporter"
+  name        = "${local.lc_name}-kafka-lag-exporter"
   description = "Kafka lag exporter service account"
 }
 
@@ -102,6 +102,7 @@ resource "confluentcloud_kafka_cluster" "cluster" {
   region           = var.gcp_region
   availability     = var.availability
   environment_id   = confluentcloud_environment.environment.id
+  cku              = var.cku
   deployment = {
     sku = var.cluster_tier
   }

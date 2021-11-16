@@ -43,6 +43,12 @@ variable "cluster_tier" {
   default     = "BASIC"
 }
 
+variable "cku" {
+  description = "Number of CKUs"
+  type        = number
+  default     = null
+}
+
 variable "service_provider" {
   description = "Confluent cloud service provider. AWS, GCP, Azure"
   type        = string
