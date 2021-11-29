@@ -1023,6 +1023,5 @@
   },
   "timezone": "",
   "title": "Kafka Lag Exporter",
-  "uid": null,
   "version": 1
 }
