@@ -17,7 +17,7 @@ terraform {
 
 locals {
   name    = "${var.environment}-${var.name}"
-  lc_name = lower("${var.environment}-${var.name}")
+  lc_name = lower(local.name)
   topic_readers = flatten([
     for name, values in var.topics :
     [for user in values.acl_readers : { topic : name, user : user }]

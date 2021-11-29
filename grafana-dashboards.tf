@@ -1,6 +1,6 @@
 resource "grafana_folder" "confluent_cloud" {
   count = var.create_grafana_dashboards ? 1 : 0
-  title = "${local.name} Confluent Cloud"
+  title = title("${var.environment} ${var.name} Confluent Cloud")
 }
 
 resource "grafana_dashboard" "ccloud_exporter" {
