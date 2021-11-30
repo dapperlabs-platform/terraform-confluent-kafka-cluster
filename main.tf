@@ -85,7 +85,7 @@ resource "confluentcloud_api_key" "kafka_lag_exporter_api_key" {
   user_id        = confluentcloud_service_account.kafka_lag_exporter[0].id
 }
 
-resource "kafka_acl" "kafka_lag_exporter" {
+resource "kafka_acl" "kafka_lag_exporter_read_topic" {
   count = var.enable_metric_exporters ? 1 : 0
 
   resource_name       = "*"
@@ -93,6 +93,28 @@ resource "kafka_acl" "kafka_lag_exporter" {
   acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
   acl_host            = "*"
   acl_operation       = "Read"
+  acl_permission_type = "Allow"
+}
+
+resource "kafka_acl" "kafka_lag_exporter_describe_topic" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Topic"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Describe"
+  acl_permission_type = "Allow"
+}
+
+resource "kafka_acl" "kafka_lag_exporter_describe_consumer_group" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Group"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Describe"
   acl_permission_type = "Allow"
 }
 

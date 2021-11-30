@@ -33,6 +33,7 @@ resource "kubernetes_secret" "lag_exporter_config" {
         password         = confluentcloud_api_key.kafka_lag_exporter_api_key[0].secret
         namespace        = var.metric_exporters_namespace
         bootstrapBrokers = local.bootstrap_servers[0]
+        clusterName      = local.lc_name
     })
     "logback.xml" = file("${path.module}/templates/logback.xml")
   }
