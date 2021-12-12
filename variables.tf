@@ -90,6 +90,24 @@ variable "kafka_lag_exporter_image_version" {
   default     = "latest"
 }
 
+variable "kafka_lag_exporter_container_resource_requests" {
+  description = "Container resource request configuration"
+  type        = map(string)
+  default = {
+    cpu    = "250m"
+    memory = "128Mi"
+  }
+}
+
+variable "kafka_lag_exporter_container_resource_limits" {
+  description = "Container resource limit configuration"
+  type        = map(string)
+  default = {
+    cpu    = "500m"
+    memory = "256Mi"
+  }
+}
+
 variable "ccloud_exporter_image_version" {
   description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
   type        = string

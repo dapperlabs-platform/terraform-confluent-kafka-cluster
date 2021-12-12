@@ -78,14 +78,8 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
           image_pull_policy = "IfNotPresent"
 
           resources {
-            limits = {
-              cpu    = "500m"
-              memory = "256Mi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "128Mi"
-            }
+            limits   = var.kafka_lag_exporter_container_resource_limits
+            requests = var.kafka_lag_exporter_container_resource_requests
           }
 
           volume_mount {
