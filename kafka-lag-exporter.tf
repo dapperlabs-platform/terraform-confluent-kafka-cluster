@@ -78,10 +78,9 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
           image_pull_policy = "IfNotPresent"
 
           resources {
-            limits   = var.kafka_lag_exporter_container_resource_limits
-            requests = var.kafka_lag_exporter_container_resource_requests
+            requests = var.ccloud_exporter_container_resources.requests
+            limits   = var.ccloud_exporter_container_resources.limits
           }
-
           volume_mount {
             mount_path = "/opt/docker/conf/"
             name       = "config"

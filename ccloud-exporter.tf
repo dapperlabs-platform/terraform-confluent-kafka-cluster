@@ -74,14 +74,8 @@ resource "kubernetes_deployment" "ccloud_exporter_deployment" {
           image_pull_policy = "Always"
 
           resources {
-            limits = {
-              cpu    = "500m"
-              memory = "256Mi"
-            }
-            requests = {
-              cpu    = "250m"
-              memory = "128Mi"
-            }
+            requests = var.ccloud_exporter_container_resources.requests
+            limits   = var.ccloud_exporter_container_resources.limits
           }
 
           env_from {
