@@ -3,6 +3,11 @@ variable "name" {
   type        = string
 }
 
+variable "product_name" {
+  description = "Product name so we can group dashboards together"
+  type        = string
+}
+
 variable "environment" {
   description = "Application environment that uses the cluster"
   type        = string

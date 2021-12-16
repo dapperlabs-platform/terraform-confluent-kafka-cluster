@@ -47,7 +47,18 @@
   "graphTooltip": 0,
   "id": null,
   "iteration": 1556312150750,
-  "links": [],
+  "links": [
+    {
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "${product_name}-${environment}"
+      ],
+      "targetBlank": false,
+      "type": "dashboards"
+    }
+  ],
   "panels": [
     {
       "collapsed": false,
@@ -934,7 +945,9 @@
   "refresh": "5m",
   "schemaVersion": 16,
   "style": "dark",
-  "tags": [],
+  "tags": [
+    "${product_name}-${environment}"
+  ],
   "templating": {
     "list": [
       {

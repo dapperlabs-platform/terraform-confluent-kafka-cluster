@@ -19,6 +19,7 @@ module "confluent-kafka-cluster" {
   confluent_cloud_password          = "<password>"
   name                              = "cluster-name"
   environment                       = "staging"
+  product_name                      = "product-name-goes-here"
   gcp_region                        = "us-west1"
   enable_metric_exporters           = true
   kafka_lag_exporter_image_version  = "latest"
@@ -85,6 +86,7 @@ The module outputs a map of service account credentials, keyed by the names prov
 | Object map keyed by topic name with topic configuration values as well as reader and writer ACL lists. Values provided to the ACL lists will become service accounts with { key, secret } objects output by service_account_credentials | list(object)                                                                                                 |        | x       |
 | enable_metric_exporters                                                                                                                                                                                                                 | Whether to deploy metrics exporters                                                                          | bool   |         |  false   |
 | metric_exporters_namespace                                                                                                                                                                                                              | K8S Namespace in which to deploy metrics exporters                                                           | string |         |   sre    |
+| product_name                                                                                                                                                                                                                            | Product name for Grafana Dashboard                                                                           | string |         |    x     |
 | kafka_lag_exporter_image_version                                                                                                                                                                                                        | Kafka lag exporter image version                                                                             | string |         |  latest  |
 | ccloud_exporter_image_version                                                                                                                                                                                                           | CCloud exporter image version                                                                                | string |         |  latest  |
 | create_grafana_dashboards                                                                                                                                                                                                               | Whether to create Grafana dashboards                                                                         | bool   |         |  false   |

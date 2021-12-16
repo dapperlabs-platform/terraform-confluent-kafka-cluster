@@ -9,8 +9,10 @@ resource "grafana_dashboard" "ccloud_exporter" {
   config_json = templatefile(
     "${path.module}/templates/ccloud-exporter.json",
     {
-      datasource = var.grafana_datasource
-      clusterID  = confluentcloud_kafka_cluster.cluster.id
+      datasource   = var.grafana_datasource
+      clusterID    = confluentcloud_kafka_cluster.cluster.id
+      environment  = var.environment
+      product_name = var.product_name
     }
   )
 }
@@ -21,8 +23,10 @@ resource "grafana_dashboard" "kafka_lag_exporter" {
   config_json = templatefile(
     "${path.module}/templates/kafka-lag-exporter.json",
     {
-      datasource  = var.grafana_datasource
-      clusterName = local.lc_name
+      datasource   = var.grafana_datasource
+      clusterName  = local.lc_name
+      environment  = var.environment
+      product_name = var.product_name
     }
   )
 }
