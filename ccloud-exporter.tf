@@ -65,6 +65,7 @@ resource "kubernetes_deployment" "ccloud_exporter_deployment" {
       spec {
         service_account_name             = kubernetes_service_account.ccloud_exporter_service_account[0].metadata.0.name
         termination_grace_period_seconds = 300
+        node_selector                    = var.exporters_node_selector
 
         container {
           name  = local.ccloud_exporter_name
