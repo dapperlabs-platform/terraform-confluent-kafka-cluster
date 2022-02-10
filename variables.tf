@@ -137,3 +137,9 @@ variable "grafana_datasource" {
   type        = string
   default     = null
 }
+
+variable "exporters_node_selector" {
+  description = "K8S Deployment node selector for metric exporters"
+  type        = map(string)
+  default     = null
+}
