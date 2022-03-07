@@ -34,9 +34,11 @@ locals {
   bootstrap_servers = [
     replace(confluentcloud_kafka_cluster.cluster.bootstrap_servers, "SASL_SSL://", "")
   ]
-  service_accounts = concat(
-    [for v in local.readers_map : v.user],
-    [for v in local.writers_map : v.user]
+  service_accounts = distinct(
+    concat(
+      [for v in local.readers_map : v.user],
+      [for v in local.writers_map : v.user]
+    )
   )
 }
 
