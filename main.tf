@@ -8,6 +8,10 @@ terraform {
       source  = "Mongey/kafka"
       version = ">= 0.2.11"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2"
+    }
     grafana = {
       source  = "grafana/grafana"
       version = ">= 1.14.0"
