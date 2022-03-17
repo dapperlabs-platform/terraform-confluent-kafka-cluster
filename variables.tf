@@ -143,3 +143,9 @@ variable "exporters_node_selector" {
   type        = map(string)
   default     = null
 }
+
+variable "add_service_account_suffix" {
+  description = "Add pet name suffix to service account names to avoid collision"
+  type        = bool
+  default     = false
+}

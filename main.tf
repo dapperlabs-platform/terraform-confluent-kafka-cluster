@@ -46,6 +46,8 @@ locals {
   )
 }
 
+resource "random_pet" "pet" {}
+
 resource "confluentcloud_environment" "environment" {
   name = local.name
 }
@@ -57,7 +59,7 @@ resource "confluentcloud_api_key" "admin_api_key" {
 
 resource "confluentcloud_service_account" "service_accounts" {
   for_each    = toset(local.service_accounts)
-  name        = "${local.lc_name}-${each.value}"
+  name        = "${local.lc_name}-${each.value}${var.add_service_account_suffix ? "-${random_pet.pet.id}" : ""}"
   description = "${each.value} service account"
 }
 
