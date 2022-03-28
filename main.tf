@@ -8,10 +8,6 @@ terraform {
       source  = "Mongey/kafka"
       version = ">= 0.2.11"
     }
-    grafana = {
-      source  = "grafana/grafana"
-      version = ">= 1.14.0"
-    }
   }
 }
 
@@ -72,8 +68,6 @@ resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
   environment_id = confluentcloud_environment.environment.id
   description    = "${local.name} ccloud exporter api key"
 }
-
-
 
 resource "confluentcloud_kafka_cluster" "cluster" {
   name             = local.name

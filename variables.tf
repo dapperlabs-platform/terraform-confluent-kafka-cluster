@@ -72,19 +72,6 @@ variable "topics" {
   )
 }
 
-
-variable "create_grafana_dashboards" {
-  description = "Whether to create grafana dashboards with default metric exporter panels"
-  type        = bool
-  default     = false
-}
-
-variable "grafana_datasource" {
-  description = "Name of Grafana data source where Kafka metrics are stored"
-  type        = string
-  default     = null
-}
-
 variable "add_service_account_suffix" {
   description = "Add pet name suffix to service account names to avoid collision"
   type        = bool
