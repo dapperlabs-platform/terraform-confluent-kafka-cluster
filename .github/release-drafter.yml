@@ -17,7 +17,7 @@ categories:
       - major
       - minor
       - patch
-change-template: '- $TITLE @$AUTHOR (#$NUMBER)' #
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)' 
 change-title-escapes: '\<*_&' 
 autolabeler:
   - label: 'chore'
