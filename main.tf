@@ -8,6 +8,10 @@ terraform {
       source  = "Mongey/kafka"
       version = ">= 0.2.11"
     }
+    grafana = {
+      source  = "grafana/grafana"
+      version = "~> 1.20.1"
+    }
   }
 }
 
