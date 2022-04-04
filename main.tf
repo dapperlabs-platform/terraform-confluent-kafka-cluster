@@ -8,6 +8,14 @@ terraform {
       source  = "Mongey/kafka"
       version = ">= 0.2.11"
     }
+    kubernetes = {
+      source  = "hashicorp/kubernetes"
+      version = ">= 2"
+    }
+    grafana = {
+      source  = "grafana/grafana"
+      version = ">= 1.14.0"
+    }
   }
 }
 
@@ -69,6 +77,55 @@ resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
   description    = "${local.name} ccloud exporter api key"
 }
 
+resource "confluentcloud_service_account" "kafka_lag_exporter" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  name        = "${local.lc_name}-kafka-lag-exporter"
+  description = "Kafka lag exporter service account"
+}
+
+resource "confluentcloud_api_key" "kafka_lag_exporter_api_key" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  description    = "${local.name} kafka lag exporter api key"
+  environment_id = confluentcloud_environment.environment.id
+  cluster_id     = confluentcloud_kafka_cluster.cluster.id
+  user_id        = confluentcloud_service_account.kafka_lag_exporter[0].id
+}
+
+resource "kafka_acl" "kafka_lag_exporter_read_topic" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Topic"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Read"
+  acl_permission_type = "Allow"
+}
+
+resource "kafka_acl" "kafka_lag_exporter_describe_topic" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Topic"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Describe"
+  acl_permission_type = "Allow"
+}
+
+resource "kafka_acl" "kafka_lag_exporter_describe_consumer_group" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  resource_name       = "*"
+  resource_type       = "Group"
+  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
+  acl_host            = "*"
+  acl_operation       = "Describe"
+  acl_permission_type = "Allow"
+}
+
 resource "confluentcloud_kafka_cluster" "cluster" {
   name             = local.name
   service_provider = var.service_provider
@@ -122,54 +179,5 @@ resource "kafka_acl" "writers" {
   acl_principal       = "User:${confluentcloud_service_account.service_accounts[each.value.user].id}"
   acl_host            = "*"
   acl_operation       = "Write"
-  acl_permission_type = "Allow"
-}
-
-resource "confluentcloud_service_account" "kafka_lag_exporter" {
-  count = var.enable_metric_exporters ? 1 : 0
-
-  name        = "${local.lc_name}-kafka-lag-exporter"
-  description = "Kafka lag exporter service account"
-}
-
-resource "confluentcloud_api_key" "kafka_lag_exporter_api_key" {
-  count = var.enable_metric_exporters ? 1 : 0
-
-  description    = "${local.name} kafka lag exporter api key"
-  environment_id = confluentcloud_environment.environment.id
-  cluster_id     = confluentcloud_kafka_cluster.cluster.id
-  user_id        = confluentcloud_service_account.kafka_lag_exporter[0].id
-}
-
-resource "kafka_acl" "kafka_lag_exporter_read_topic" {
-  count = var.enable_metric_exporters ? 1 : 0
-
-  resource_name       = "*"
-  resource_type       = "Topic"
-  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
-  acl_host            = "*"
-  acl_operation       = "Read"
-  acl_permission_type = "Allow"
-}
-
-resource "kafka_acl" "kafka_lag_exporter_describe_topic" {
-  count = var.enable_metric_exporters ? 1 : 0
-
-  resource_name       = "*"
-  resource_type       = "Topic"
-  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
-  acl_host            = "*"
-  acl_operation       = "Describe"
-  acl_permission_type = "Allow"
-}
-
-resource "kafka_acl" "kafka_lag_exporter_describe_consumer_group" {
-  count = var.enable_metric_exporters ? 1 : 0
-
-  resource_name       = "*"
-  resource_type       = "Group"
-  acl_principal       = "User:${confluentcloud_service_account.kafka_lag_exporter[0].id}"
-  acl_host            = "*"
-  acl_operation       = "Describe"
   acl_permission_type = "Allow"
 }
