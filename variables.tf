@@ -90,6 +90,12 @@ variable "metric_exporters_namespace" {
   default     = "sre"
 }
 
+variable "kafka_lag_exporter_pod_annotations" {
+  description = "Lag exporter pod annotations"
+  type        = map(string)
+  default     = {}
+}
+
 variable "kafka_lag_exporter_image_version" {
   description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
   type        = string
@@ -102,11 +108,11 @@ variable "kafka_lag_exporter_container_resources" {
   default = {
     requests = {
       cpu    = "250m"
-      memory = "128Mi"
+      memory = "1Gi"
     }
     limits = {
       cpu    = "500m"
-      memory = "256Mi"
+      memory = "2Gi"
     }
   }
 }

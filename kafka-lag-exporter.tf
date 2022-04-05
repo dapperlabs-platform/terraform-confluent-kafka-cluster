@@ -61,11 +61,14 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
     template {
       metadata {
         labels = local.lag_exporter_common_labels
-        annotations = {
-          "prometheus.io/port"   = "9090"
-          "prometheus.io/path"   = "/"
-          "prometheus.io/scrape" = "true"
-        }
+        annotations = merge(
+          var.kafka_lag_exporter_pod_annotations,
+          {
+            "prometheus.io/port"   = "9090"
+            "prometheus.io/path"   = "/"
+            "prometheus.io/scrape" = "true"
+          },
+        )
       }
 
       spec {
