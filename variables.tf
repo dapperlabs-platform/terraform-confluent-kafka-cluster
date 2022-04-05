@@ -90,8 +90,8 @@ variable "metric_exporters_namespace" {
   default     = "sre"
 }
 
-variable "kafka_lag_exporter_pod_annotations" {
-  description = "Lag exporter pod annotations"
+variable "kafka_lag_exporter_annotations" {
+  description = "Lag exporter annotations"
   type        = map(string)
   default     = {}
 }

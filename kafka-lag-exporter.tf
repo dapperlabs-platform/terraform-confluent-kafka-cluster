@@ -46,9 +46,10 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
   wait_for_rollout = false
 
   metadata {
-    name      = local.lag_exporter_name
-    namespace = var.metric_exporters_namespace
-    labels    = local.lag_exporter_common_labels
+    name        = local.lag_exporter_name
+    namespace   = var.metric_exporters_namespace
+    labels      = local.lag_exporter_common_labels
+    annotations = var.kafka_lag_exporter_annotations
   }
 
   spec {
@@ -62,12 +63,12 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
       metadata {
         labels = local.lag_exporter_common_labels
         annotations = merge(
-          var.kafka_lag_exporter_pod_annotations,
           {
             "prometheus.io/port"   = "9090"
             "prometheus.io/path"   = "/"
             "prometheus.io/scrape" = "true"
           },
+          var.kafka_lag_exporter_annotations,
         )
       }
 
