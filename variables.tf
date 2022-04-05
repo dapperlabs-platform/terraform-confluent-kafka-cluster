@@ -102,11 +102,11 @@ variable "kafka_lag_exporter_container_resources" {
   default = {
     requests = {
       cpu    = "250m"
-      memory = "128Mi"
+      memory = "1Gi"
     }
     limits = {
       cpu    = "500m"
-      memory = "256Mi"
+      memory = "2Gi"
     }
   }
 }
