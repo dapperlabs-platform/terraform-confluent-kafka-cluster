@@ -97,7 +97,7 @@ variable "kafka_lag_exporter_annotations" {
 }
 
 variable "kafka_lag_exporter_image_version" {
-  description = "See https://github.com/lightbend/kafka-lag-exporter/releases"
+  description = "See https://github.com/seglo/kafka-lag-exporter/releases"
   type        = string
 }
 

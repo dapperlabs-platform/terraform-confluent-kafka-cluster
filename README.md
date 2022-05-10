@@ -48,7 +48,7 @@ module "confluent-kafka-cluster" {
 
 ### If `enable_metric_exporters` is set to true
 
-[Kafka-lag-exporter](https://github.com/lightbend/kafka-lag-exporter) and [ccloud-exporter](https://github.com/Dabz/ccloudexporter) resources:
+[Kafka-lag-exporter](https://github.com/seglo/kafka-lag-exporter) and [ccloud-exporter](https://github.com/Dabz/ccloudexporter) resources:
 
 - 1 K8S Service account
 - 1 K8S Secret with credentials and configs

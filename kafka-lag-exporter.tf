@@ -79,7 +79,7 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
 
         container {
           name              = local.lag_exporter_name
-          image             = "lightbend/kafka-lag-exporter:${var.kafka_lag_exporter_image_version}"
+          image             = "seglo/kafka-lag-exporter:${var.kafka_lag_exporter_image_version}"
           image_pull_policy = "IfNotPresent"
 
           resources {
