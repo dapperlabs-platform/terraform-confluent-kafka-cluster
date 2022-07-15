@@ -13,6 +13,16 @@ output "kafka_url" {
   value       = local.bootstrap_servers
 }
 
+output "cluster_id" {
+  description = "Cluster ID"
+  value       = confluentcloud_kafka_cluster.cluster.id
+}
+
+output "rest_api_endpoint" {
+  description = "REST API endpoint to manage the cluster"
+  value       = local.rest_api_endpoint
+}
+
 output "admin_api_key" {
   description = "Admin user api key and secret"
   value       = confluentcloud_api_key.admin_api_key
