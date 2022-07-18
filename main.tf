@@ -38,6 +38,11 @@ locals {
   bootstrap_servers = [
     replace(confluentcloud_kafka_cluster.cluster.bootstrap_servers, "SASL_SSL://", "")
   ]
+
+  # Since Mongey's Confluent provider doesn't provide rest endpoint url
+  # we should build it ourselves basing on the assumption that domain
+  # name is the same as in bootstrap_servers
+  rest_api_endpoint = replace(confluentcloud_kafka_cluster.cluster.bootstrap_servers, "/^SASL_SSL:\\/\\/(.*):([0-9]+)$/", "https://$1:443")
   service_accounts = distinct(
     concat(
       [for v in local.readers_map : v.user],
