@@ -10,7 +10,7 @@ resource "grafana_dashboard" "ccloud_exporter" {
     "${path.module}/templates/ccloud-exporter.json",
     {
       datasource = var.grafana_datasource
-      clusterID  = confluent_kafka_cluster.cluster.id
+      clusterID  = confluentcloud_kafka_cluster.cluster.id
     }
   )
 }
