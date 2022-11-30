@@ -133,3 +133,30 @@ variable "exporters_node_selector" {
   type        = map(string)
   default     = null
 }
+
+variable "ccloud_exporter_annotations" {
+  description = "CCloud exporter annotations"
+  type        = map(string)
+  default     = {}
+}
+
+variable "ccloud_exporter_image_version" {
+  description = "Exporter Image Version"
+  type        = string
+  default     = "latest"
+}
+
+variable "ccloud_exporter_container_resources" {
+  description = "Container resource limit configuration"
+  type        = map(map(string))
+  default = {
+    requests = {
+      cpu    = "250m"
+      memory = "1Gi"
+    }
+    limits = {
+      cpu    = "500m"
+      memory = "2Gi"
+    }
+  }
+}
