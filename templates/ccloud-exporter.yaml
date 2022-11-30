@@ -1,0 +1,36 @@
+config:
+  http:
+    baseurl: https://api.telemetry.confluent.cloud/
+    timeout: 60
+  listener: 0.0.0.0:2112
+  noTimestamp: false
+  delay: 60
+  granularity: PT1M
+  cachedSecond: 60
+rules:
+  - clusters:
+      - ${cluster_id}
+    connectors: []
+    ksqls: []
+    schemaRegistries: []
+    metrics:
+      - io.confluent.kafka.server/received_bytes
+      - io.confluent.kafka.server/sent_bytes
+      - io.confluent.kafka.server/received_records
+      - io.confluent.kafka.server/sent_records
+      - io.confluent.kafka.server/retained_bytes
+      - io.confluent.kafka.server/active_connection_count
+      - io.confluent.kafka.server/request_count
+      - io.confluent.kafka.server/partition_count
+      - io.confluent.kafka.server/successful_authentication_count
+      - io.confluent.kafka.server/consumer_lag_offsets
+      - io.confluent.kafka.server/cluster_link_mirror_topic_count
+      - io.confluent.kafka.server/cluster_link_mirror_topic_offset_lag
+      - io.confluent.kafka.server/cluster_link_mirror_topic_bytes
+      - io.confluent.kafka.server/cluster_load_percent
+    labels:
+      - kafka_id
+      - topic
+      - type
+      - link_name
+      - link_mirror_topic_state

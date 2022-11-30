@@ -135,3 +135,106 @@ resource "kubernetes_deployment" "lag_exporter_deployment" {
     }
   }
 }
+
+resource "confluent_service_account" "kafka_lag_exporter" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  display_name = "${local.lc_name}-kafka-lag-exporter${var.add_service_account_suffix ? "-${random_pet.pet.id}" : ""}"
+  description  = "Kafka lag exporter service account"
+}
+
+resource "confluent_role_binding" "kafka_lag_exporter_cluster_role_binding" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  principal   = "User:${confluent_service_account.kafka_lag_exporter[0].id}"
+  role_name   = "CloudClusterAdmin"
+  crn_pattern = confluent_kafka_cluster.cluster.rbac_crn
+}
+
+resource "confluent_api_key" "kafka_lag_exporter_api_key" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  display_name = "${local.name}-kafka-lag-exporter${var.add_service_account_suffix ? "-${random_pet.pet.id}" : ""}-api-key"
+  description  = "${local.name} Kafka lag exporter api key"
+  owner {
+    id          = confluent_service_account.kafka_lag_exporter[0].id
+    api_version = confluent_service_account.kafka_lag_exporter[0].api_version
+    kind        = confluent_service_account.kafka_lag_exporter[0].kind
+  }
+
+  managed_resource {
+    id          = confluent_kafka_cluster.cluster.id
+    api_version = confluent_kafka_cluster.cluster.api_version
+    kind        = confluent_kafka_cluster.cluster.kind
+
+    environment {
+      id = confluent_environment.environment.id
+    }
+  }
+  depends_on = [
+    confluent_role_binding.kafka_lag_exporter_cluster_role_binding
+  ]
+}
+
+# Topic Readers ACL
+resource "confluent_kafka_acl" "kafka_lag_exporter_read_topic" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  kafka_cluster {
+    id = confluent_kafka_cluster.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = "*"
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.kafka_lag_exporter[0].id}"
+  host          = "*"
+  operation     = "READ"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.cluster.rest_endpoint
+  credentials {
+    key    = confluent_api_key.kafka_lag_exporter_api_key[0].id
+    secret = confluent_api_key.kafka_lag_exporter_api_key[0].secret
+  }
+}
+
+# Topic Describe ACL
+resource "confluent_kafka_acl" "kafka_lag_exporter_describe_topic" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  kafka_cluster {
+    id = confluent_kafka_cluster.cluster.id
+  }
+  resource_type = "TOPIC"
+  resource_name = "*"
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.kafka_lag_exporter[0].id}"
+  host          = "*"
+  operation     = "DESCRIBE"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.cluster.rest_endpoint
+  credentials {
+    key    = confluent_api_key.kafka_lag_exporter_api_key[0].id
+    secret = confluent_api_key.kafka_lag_exporter_api_key[0].secret
+  }
+}
+
+# Topic Describe Group ACL
+resource "confluent_kafka_acl" "kafka_lag_exporter_describe_consumer_group" {
+  count = var.enable_metric_exporters ? 1 : 0
+
+  kafka_cluster {
+    id = confluent_kafka_cluster.cluster.id
+  }
+  resource_type = "GROUP"
+  resource_name = "*"
+  pattern_type  = "LITERAL"
+  principal     = "User:${confluent_service_account.kafka_lag_exporter[0].id}"
+  host          = "*"
+  operation     = "DESCRIBE"
+  permission    = "ALLOW"
+  rest_endpoint = confluent_kafka_cluster.cluster.rest_endpoint
+  credentials {
+    key    = confluent_api_key.kafka_lag_exporter_api_key[0].id
+    secret = confluent_api_key.kafka_lag_exporter_api_key[0].secret
+  }
+}
