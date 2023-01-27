@@ -101,6 +101,12 @@ variable "kafka_lag_exporter_image_version" {
   type        = string
 }
 
+variable "kafka_lag_exporter_log_level" {
+  description = "Lag exporter log level"
+  type        = string
+  default     = "INFO"
+}
+
 variable "kafka_lag_exporter_container_resources" {
   description = "Container resource limit configuration"
   type        = map(map(string))

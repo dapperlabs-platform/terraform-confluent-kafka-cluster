@@ -34,8 +34,12 @@ resource "kubernetes_secret" "lag_exporter_config" {
         namespace        = var.metric_exporters_namespace
         bootstrapBrokers = local.bootstrap_servers[0]
         clusterName      = local.lc_name
+        logLevel         = var.kafka_lag_exporter_log_level
     })
-    "logback.xml" = file("${path.module}/templates/logback.xml")
+    "logback.xml" = templatefile(
+      "${path.module}/templates/logback.xml", {
+        logLevel = var.kafka_lag_exporter_log_level
+    })
   }
 }
 
