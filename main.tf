@@ -75,6 +75,13 @@ resource "confluentcloud_api_key" "service_account_api_keys" {
   user_id        = confluentcloud_service_account.service_accounts[each.value].id
 }
 
+resource "confluentcloud_api_key" "new_service_account_api_keys" {
+  for_each       = toset(local.service_accounts)
+  cluster_id     = confluentcloud_kafka_cluster.cluster.id
+  environment_id = confluentcloud_environment.environment.id
+  user_id        = confluentcloud_service_account.service_accounts[each.value].id
+}
+
 resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
   count = var.enable_metric_exporters ? 1 : 0
 
