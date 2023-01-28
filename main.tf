@@ -68,13 +68,6 @@ resource "confluentcloud_service_account" "service_accounts" {
   description = "${each.value} service account"
 }
 
-resource "confluentcloud_api_key" "service_account_api_keys" {
-  for_each       = toset(local.service_accounts)
-  cluster_id     = confluentcloud_kafka_cluster.cluster.id
-  environment_id = confluentcloud_environment.environment.id
-  user_id        = confluentcloud_service_account.service_accounts[each.value].id
-}
-
 resource "confluentcloud_api_key" "new_service_account_api_keys" {
   for_each       = toset(local.service_accounts)
   cluster_id     = confluentcloud_kafka_cluster.cluster.id
