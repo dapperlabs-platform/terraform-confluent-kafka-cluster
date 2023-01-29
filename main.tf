@@ -69,10 +69,13 @@ resource "confluentcloud_service_account" "service_accounts" {
 }
 
 resource "confluentcloud_api_key" "service_account_api_keys" {
-  for_each       = toset(local.service_accounts)
+  # given service_accounts = [reader, writer]
+  # given service_account_key_versions = [v1, v2]
+  # product is ["v1/reader", "v1/writer", "v2/reader", "v2/writer"]
+  for_each       = toset([for v in setproduct(var.service_account_key_versions, local.service_accounts) : join("/", v)])
   cluster_id     = confluentcloud_kafka_cluster.cluster.id
   environment_id = confluentcloud_environment.environment.id
-  user_id        = confluentcloud_service_account.service_accounts[each.value].id
+  user_id        = confluentcloud_service_account.service_accounts[split("/", each.value)[1]].id
 }
 
 resource "confluentcloud_api_key" "ccloud_exporter_api_key" {
