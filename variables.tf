@@ -166,3 +166,9 @@ variable "ccloud_exporter_container_resources" {
     }
   }
 }
+
+variable "service_account_key_versions" {
+  description = "When creating multiple service account keys, group them by the versions provided in this variable"
+  type        = list(string)
+  default     = ["default"]
+}
